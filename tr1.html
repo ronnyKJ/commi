@@ -1,0 +1,99 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">  
+<html>  
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+<title>同声翻译</title>
+    <style>
+        #container{
+            margin: 200px auto;
+            width: 300px;
+            text-align: center;
+        }
+        #source{
+            zoom:2;
+        }
+    </style>
+</head>  
+<body>
+<div id="container">
+<div id="text"></div>
+<div id="text1"></div>
+</div>
+
+    
+<script type="text/javascript">
+var final_transcript = '';
+var recognizing = false;
+var ignore_onend;
+var start_timestamp;
+
+if (!('webkitSpeechRecognition' in window)) {
+  alert('你的浏览器太水了');
+} else {
+  var recognition = new webkitSpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onstart = function() {
+    recognizing = true;
+    console.log('--start--');
+  };
+
+  recognition.onerror = function(event) {
+    if (event.error == 'no-speech') {
+      ignore_onend = true;
+    }
+    if (event.error == 'audio-capture') {
+      ignore_onend = true;
+    }
+    if (event.error == 'not-allowed') {
+      if (event.timeStamp - start_timestamp < 100) {
+      } else {
+      }
+      ignore_onend = true;
+    }
+  };
+
+  recognition.onend = function() {
+    console.log('--end--');
+    recognizing = false;
+    if (ignore_onend) {
+      return;
+    }
+
+    if (!final_transcript) {
+      // showInfo('info_start');
+      return;
+    }
+  };
+
+  recognition.onresult = function(event) {
+    console.log('--result--');
+    var interim_transcript = '';
+    if (typeof(event.results) == 'undefined') {
+      recognition.onend = null;
+      recognition.stop();
+      return;
+    }
+    for (var i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        final_transcript += event.results[i][0].transcript;
+      } else {
+        interim_transcript += event.results[i][0].transcript;
+      }
+    }
+
+    text.innerHTML = final_transcript;
+    text1.innerHTML = interim_transcript;
+  };
+}
+
+document.onclick=function(){
+    recognition.lang = 'cmn-Hans-CN';
+    recognition.start();
+}
+</script>
+</body>  
+</html>

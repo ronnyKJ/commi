@@ -1,0 +1,100 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">  
+<html>  
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+<title>同声翻译</title>
+    <style>
+    body{background: #51a6d6;text-align: center;color:#e8f7ff;}
+    #logo{margin: 40px auto;display: block;}
+    #button{margin: 50px auto;display: block;}
+    #cpr{margin: 100px 0 10px;font-size: 10px;}
+    #text{height: 40px;}
+        #container{
+            margin: 20px auto;
+            width: 300px;
+            text-align: center;
+        }
+        #source{
+            zoom:2;
+        }
+    </style>
+</head>  
+<body>
+  <img id="logo" src="img/logo.png" width="300" />
+  <img id="button" src="img/1.jpg" width="200" height="200" />
+<div id="container">
+  <div id="text2" style="display:none"></div>
+<div id="text">点击话筒，请讲普通话</div>
+
+<iframe id="frame" style="display:none"></iframe>
+</div>
+<div id="cpr">&copy; Copyright Ronny's Lab</div>
+
+    
+<script type="text/javascript">
+var flag = false;
+var transcript = '';
+
+if (!('webkitSpeechRecognition' in window)) {
+  alert('你的浏览器太水了');
+} else {
+  var recognition = new webkitSpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onstart = function() {
+    flag = true;
+    console.log('-- start --');
+  };
+
+  recognition.onerror = function(event) {
+  };
+
+  recognition.onend = function() {
+  };
+
+ var isResult = false;
+  recognition.onresult = function(event) {
+
+text2.innerHTML = event.results[event.results.length-1][0].transcript
+
+    var tmp = [];
+    for (var i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        transcript = event.results[i][0].transcript;
+        isResult = true;
+        tmp.push(transcript);
+      }
+    }
+
+    text.innerHTML = transcript;
+
+    if(isResult){
+      var newScript = document.createElement('script');
+        newScript.type = 'text/javascript';
+        var sourceText = escape(tmp[0]);
+        var source = 'http://fanyi.youdao.com/openapi.do?keyfrom=ronaldinhokj&key=1478216563&type=data&doctype=jsonp&callback=comeback&version=1.1&q=' + sourceText;
+        newScript.src = source;
+        document.getElementsByTagName('head')[0].appendChild(newScript);
+    }
+
+  };
+}
+
+button.onclick=function(){
+  this.src="img/2.gif";
+    if(flag) return;  
+    recognition.lang = 'cmn-Hans-CN';
+    recognition.start();
+}
+
+  function comeback(result)
+  {
+        var text =  result.translation[0];
+        document.getElementById("frame").src = "http://translate.google.cn/translate_tts?ie=UTF-8&q=" + text + "&tl=en&total=1&idx=0&textlen=12&prev=input";
+  }
+</script>
+</body>  
+</html>

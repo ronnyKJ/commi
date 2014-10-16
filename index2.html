@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">  
+<html>  
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<link rel="shortcut icon" href="favicon.ico" >
+<title>Commi</title>
+    <style>
+    body{background: #51a6d6;text-align: center;color:#e8f7ff;}
+    #logo{margin: 40px auto;display: block;}
+    #button{margin: 50px auto;display: block;}
+    #cpr{margin: 100px 0 10px;font-size: 10px;}
+    #text{height: 40px;}
+        #container{
+            margin: 20px auto;
+            width: 300px;
+            text-align: center;
+        }
+        #source{
+            zoom:2;
+        }
+        #ipt{
+          border: none;
+height: 40px;
+width: 300px;
+margin-top: 60px;
+padding:5px;
+font-size: 20px;
+        }
+    </style>
+</head>  
+<body>
+  <img id="logo" src="img/logo.png" width="300" />
+  
+<div id="container">
+  <div id="text2"><input id="ipt" type="text" onblur="trans(this.value)" value="" placeholder="请输入中文，然后回车" /></div>
+
+
+<iframe id="frame" style="display:none"></iframe>
+</div>
+<div id="cpr">&copy; Copyright Ronny's Lab</div>
+
+    
+<script type="text/javascript">
+
+document.onkeydown = function(e){
+  if(e.keyCode == 13){
+    ipt.blur();
+    ipt.value = '';
+    ipt.focus();
+  }
+}
+
+function trans(t){
+    var newScript = document.createElement('script');
+        newScript.type = 'text/javascript';
+        var sourceText = escape(t);
+        var source = 'http://fanyi.youdao.com/openapi.do?keyfrom=ronaldinhokj&key=1478216563&type=data&doctype=jsonp&callback=comeback&version=1.1&q=' + sourceText;
+        newScript.src = source;
+        document.getElementsByTagName('head')[0].appendChild(newScript);
+}
+
+  function comeback(result)
+  {
+        var text =  result.translation[0];
+        document.getElementById("frame").src = "http://translate.google.cn/translate_tts?ie=UTF-8&q=" + text + "&tl=en&total=1&idx=0&textlen=12&prev=input";
+  }
+</script>
+</body>  
+</html>
